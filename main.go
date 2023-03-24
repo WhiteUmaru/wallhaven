@@ -34,7 +34,12 @@ const MAX_POOL_SIZE = 4
 
 func main() {
 	fmt.Println("欢迎使用壁纸引擎")
-	fmt.Println("请输入模式：1.默认模式 2.自定义模式 3. 批量下载模式")
+	fmt.Println(`请输入模式：
+	1.默认模式 
+	2.自定义模式 
+	3.批量下载模式
+	4.自动模式
+	`)
 	model := "1"
 	fmt.Scanln(&model)
 	if model == "2" {
@@ -59,6 +64,16 @@ func main() {
 		startDownloadImage(pool)
 		wg.Wait()
 		return
+	} else if model == "4" {
+		for {
+			startTime := time.Now().UnixMilli()
+			file := getRandomImage()
+			fmt.Println("休眠10s")
+			sleepTime := int64(time.Second*10) - (time.Now().UnixMilli()-startTime)*int64(time.Millisecond)
+			fmt.Println("实际休息" + strconv.Itoa(int(sleepTime/int64(time.Second))) + "s")
+			time.Sleep(time.Duration(sleepTime))
+			wallpaper.SetFromFile(file)
+		}
 	}
 
 	file := getRandomImage()
