@@ -71,9 +71,8 @@ func setConfig() {
 	fmt.Println("请设置风格：100/101/111* /etc (general/anime/people)")
 	var mCategories string
 	fmt.Scanln(&mCategories)
-	if mCategories != "" {
-		categories = mCategories
-	}
+	mCategories
+	categories = mCategories
 	fmt.Println("请设置图片级别：100/101/111* /etc (sfw/sketchy/nsfw)")
 	fmt.Scanln(&purity)
 }
