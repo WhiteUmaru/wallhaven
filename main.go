@@ -68,13 +68,15 @@ func main() {
 }
 
 func setConfig() {
-	fmt.Println("请设置风格：100/101/111* /etc (general/anime/people)")
+	fmt.Println("请设置风格：需要该风格请将该位置放1否则放0  (general|anime|people)  例子：100(仅general)、110（general和anime）")
 	var mCategories string
 	fmt.Scanln(&mCategories)
-	mCategories
-	categories = mCategories
-	fmt.Println("请设置图片级别：100/101/111* /etc (sfw/sketchy/nsfw)")
-	fmt.Scanln(&purity)
+	categories = formart(mCategories)
+	fmt.Println("请设置图片级别：需要该级别请将该位置放1否则放0 (sfw/sketchy/nsfw)")
+
+	mCategories = purity
+	fmt.Scanln(&mCategories)
+	purity = formart(mCategories)
 }
 
 func setDownloadType() {
@@ -82,6 +84,19 @@ func setDownloadType() {
 	order = "desc"
 	fmt.Println("请输入要下载的页数：default：1")
 	fmt.Scanln(&pager)
+}
+
+func formart(src string) string {
+	var char = []byte("111")
+	for i := 0; i < 3; i++ {
+		c := src[i : i+1]
+		if c == "1" {
+			char[i] = '1'
+		} else {
+			char[i] = '0'
+		}
+	}
+	return string(char)
 }
 
 func startDownloadImage(pool *tunny.Pool) {
