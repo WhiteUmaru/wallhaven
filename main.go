@@ -30,7 +30,7 @@ var (
 	wg           sync.WaitGroup
 )
 
-const MAX_POOL_SIZE = 4
+const MAX_POOL_SIZE = 64
 
 func main() {
 	fmt.Println("欢迎使用壁纸引擎")
@@ -86,12 +86,12 @@ func setConfig() {
 	fmt.Println("请设置风格：需要该风格请将该位置放1否则放0  (general|anime|people)  例子：100(仅general)、110（general和anime）")
 	var mCategories string
 	fmt.Scanln(&mCategories)
-	categories = formart(mCategories)
+	categories = format(mCategories)
 	fmt.Println("请设置图片级别：需要该级别请将该位置放1否则放0 (sfw/sketchy/nsfw)")
 
 	mCategories = purity
 	fmt.Scanln(&mCategories)
-	purity = formart(mCategories)
+	purity = format(mCategories)
 }
 
 func setDownloadType() {
@@ -101,14 +101,17 @@ func setDownloadType() {
 	fmt.Scanln(&pager)
 }
 
-func formart(src string) string {
-	var char = []byte("111")
-	for i := 0; i < 3; i++ {
-		c := src[i : i+1]
-		if c == "1" {
-			char[i] = '1'
-		} else {
-			char[i] = '0'
+func format(src string) string {
+	var char = []byte("110")
+	var config = []byte(src)
+	for i := 0; i < len(char); i++ {
+		if len(config) > i {
+			c := config[i]
+			if c == '1' {
+				char[i] = '1'
+			} else {
+				char[i] = '0'
+			}
 		}
 	}
 	return string(char)
