@@ -30,10 +30,10 @@ var (
 	wg           sync.WaitGroup
 )
 
-const MAX_POOL_SIZE = 64
+const MAX_POOL_SIZE = 4
 
 func main() {
-	fmt.Println("欢迎使用壁纸引擎")
+	fmt.Println("欢迎使用壁纸引擎V2")
 	fmt.Println(`请输入模式：
 	1.默认模式 
 	2.自定义模式 
@@ -145,7 +145,11 @@ func getRandomImage() string {
 	}
 	fmt.Println("开始下载照片" + data[0].Id)
 	file := downloadImage(path)
-	fmt.Println("下载成功！图片保存路径为：" + file)
+	if len(file) > 0 {
+		fmt.Println("下载成功！图片保存路径为：" + file)
+	} else {
+		fmt.Println("下载失败-->！" + file)
+	}
 	return file
 }
 
@@ -173,8 +177,9 @@ func downloadImage(url string) string {
 	write := bufio.NewWriter(file)
 	write.Write(body)
 	write.Flush()
-	if FileSize(filePath) < 1024*10 {
-		fmt.Println("下载失败:" + strs[len(strs)-1])
+	if FileSize(filePath) < 1024*20 {
+		fmt.Println("下载失败:" + strs[len(strs)-1] + "--->" + filePath)
+		file.Close()
 		os.Remove(filePath)
 		return ""
 	}
