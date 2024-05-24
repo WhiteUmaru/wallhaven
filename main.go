@@ -63,6 +63,7 @@ func main() {
 
 		startDownloadImage(pool)
 		wg.Wait()
+		fmt.Println("再见~")
 		return
 	} else if model == "4" {
 		for {
