@@ -33,7 +33,7 @@ var (
 const MAX_POOL_SIZE = 4
 
 func main() {
-	fmt.Println("欢迎使用壁纸引擎")
+	fmt.Println("欢迎使用壁纸引擎V2")
 	fmt.Println(`请输入模式：
 	1.默认模式 
 	2.自定义模式 
@@ -87,12 +87,12 @@ func setConfig() {
 	fmt.Println("请设置风格：需要该风格请将该位置放1否则放0  (general|anime|people)  例子：100(仅general)、110（general和anime）")
 	var mCategories string
 	fmt.Scanln(&mCategories)
-	categories = formart(mCategories)
+	categories = format(mCategories)
 	fmt.Println("请设置图片级别：需要该级别请将该位置放1否则放0 (sfw/sketchy/nsfw)")
 
 	mCategories = purity
 	fmt.Scanln(&mCategories)
-	purity = formart(mCategories)
+	purity = format(mCategories)
 }
 
 func setDownloadType() {
@@ -102,14 +102,17 @@ func setDownloadType() {
 	fmt.Scanln(&pager)
 }
 
-func formart(src string) string {
-	var char = []byte("111")
-	for i := 0; i < 3; i++ {
-		c := src[i : i+1]
-		if c == "1" {
-			char[i] = '1'
-		} else {
-			char[i] = '0'
+func format(src string) string {
+	var char = []byte("110")
+	var config = []byte(src)
+	for i := 0; i < len(char); i++ {
+		if len(config) > i {
+			c := config[i]
+			if c == '1' {
+				char[i] = '1'
+			} else {
+				char[i] = '0'
+			}
 		}
 	}
 	return string(char)
@@ -143,7 +146,11 @@ func getRandomImage() string {
 	}
 	fmt.Println("开始下载照片" + data[0].Id)
 	file := downloadImage(path)
-	fmt.Println("下载成功！图片保存路径为：" + file)
+	if len(file) > 0 {
+		fmt.Println("下载成功！图片保存路径为：" + file)
+	} else {
+		fmt.Println("下载失败-->！" + file)
+	}
 	return file
 }
 
@@ -171,8 +178,9 @@ func downloadImage(url string) string {
 	write := bufio.NewWriter(file)
 	write.Write(body)
 	write.Flush()
-	if FileSize(filePath) < 1024*10 {
-		fmt.Println("下载失败:" + strs[len(strs)-1])
+	if FileSize(filePath) < 1024*20 {
+		fmt.Println("下载失败:" + strs[len(strs)-1] + "--->" + filePath)
+		file.Close()
 		os.Remove(filePath)
 		return ""
 	}
