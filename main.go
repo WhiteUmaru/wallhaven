@@ -24,7 +24,7 @@ var (
 	sorting      = "random"
 	order        = "desc"
 	topRange     = "1M"
-	pager        = 1
+	pager        = 5
 	__dirPath, _ = os.Getwd()
 	client       = http.Client{}
 	wg           sync.WaitGroup
@@ -41,7 +41,13 @@ func main() {
 	4.自动模式
 	`)
 	model := "1"
-	fmt.Scanln(&model)
+	args := os.Args
+	if len(args) > 1 {
+		model = args[1]
+	} else {
+		fmt.Scanln(&model)
+	}
+
 	if model == "2" {
 		fmt.Println("开始自定义模式")
 		setConfig()
@@ -75,6 +81,24 @@ func main() {
 			time.Sleep(time.Duration(sleepTime))
 			wallpaper.SetFromFile(file)
 		}
+	} else if model == "5" {
+		fmt.Println("开始下载图片列表")
+		pool := tunny.NewFunc(MAX_POOL_SIZE, func(obj interface{}) interface{} {
+			switch photo := obj.(type) {
+			case PhotoInfo:
+				fmt.Println("开始下载照片" + photo.Id)
+				file := downloadImage(photo.Path)
+				fmt.Println("下载成功！图片保存路径为：" + file)
+				time.Sleep(time.Second)
+			}
+			return nil
+		})
+		defer pool.Close()
+
+		startDownloadImage(pool)
+		wg.Wait()
+		fmt.Println("再见~")
+		return
 	}
 
 	file := getRandomImage()
